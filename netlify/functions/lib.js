@@ -9,7 +9,14 @@ const auth = event => verify((event.headers.authorization || "").replace(/^Beare
 const encryptionKey = () => crypto.createHash("sha256").update(process.env.DATA_ENCRYPTION_KEY || "").digest();
 const encrypt = value => { const iv = crypto.randomBytes(12), cipher = crypto.createCipheriv("aes-256-gcm", encryptionKey(), iv); const encrypted = Buffer.concat([cipher.update(JSON.stringify(value), "utf8"), cipher.final()]); return JSON.stringify({ v: 1, iv: iv.toString("base64"), tag: cipher.getAuthTag().toString("base64"), data: encrypted.toString("base64") }); };
 const decrypt = raw => { if (!raw) return []; const box = JSON.parse(raw), decipher = crypto.createDecipheriv("aes-256-gcm", encryptionKey(), Buffer.from(box.iv, "base64")); decipher.setAuthTag(Buffer.from(box.tag, "base64")); return JSON.parse(Buffer.concat([decipher.update(Buffer.from(box.data, "base64")), decipher.final()]).toString("utf8")); };
-const headers = () => ({ apikey: process.env.SUPABASE_SERVICE_ROLE_KEY, authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`, "content-type": "application/json" });
+const headers = () => {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+  const result = { apikey: key, "content-type": "application/json" };
+  // Las nuevas claves sb_secret_ se autentican mediante el encabezado apikey.
+  // Las claves service_role heredadas (JWT) también requieren Authorization.
+  if (!key.startsWith("sb_secret_")) result.authorization = `Bearer ${key}`;
+  return result;
+};
 const base = () => `${String(process.env.SUPABASE_URL || "").replace(/\/$/, "")}/rest/v1/app_store`;
 const getRaw = async id => { const res = await fetch(`${base()}?id=eq.${encodeURIComponent(id)}&select=payload`, { headers: headers() }); if (!res.ok) throw Error(`Database read failed: ${res.status}`); const rows = await res.json(); return rows[0]?.payload || null; };
 const setRaw = async (id, payload) => { const res = await fetch(base(), { method: "POST", headers: { ...headers(), prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify({ id, payload, updated_at: new Date().toISOString() }) }); if (!res.ok) throw Error(`Database write failed: ${res.status}`); };
