@@ -1,0 +1,18 @@
+/* ClaveSegura Cloud v5.0.3 - Tipografía ampliada */
+.brand b{font-size:17px}.brand small{font-size:10px}
+nav p{font-size:10px}nav button,nav label{font-size:11px}
+.online b{font-size:11px}.online small{font-size:10px}
+header p{font-size:10px}header h1{font-size:29px}header h1 small{font-size:12px}header>div>span{font-size:12px}
+.accent{font-size:11px}.tabs b{font-size:11px}
+.tools input,.tools select{font-size:11px}
+.table-title h2{font-size:14px}.table-title p,.table-title>span{font-size:10px}
+th{font-size:10px}td{font-size:12px}
+.service>i{font-size:9px}.service b{font-size:12px}.service small{font-size:10px}
+.flat{font-size:12px}.pass code{font-size:12px}.tag{font-size:11px}.icon{font-size:13px}
+.modal h2{font-size:18px}.modal p{font-size:11px}
+.form-grid label{font-size:11px}.form-grid input,.form-grid select,.form-grid textarea{font-size:13px}
+.modal-actions>button:not(.accent){font-size:11px}
+.login-card>p{font-size:10px}.login-card h1{font-size:27px}.login-card>span{font-size:12px}
+.login-card label{font-size:11px}.login-card input{font-size:13px}.error{font-size:11px}.login-card>small{font-size:10px}
+#toast{font-size:11px}
+@media(max-width:520px){header h1{font-size:26px}td{font-size:13px}.service b,.flat,.pass code{font-size:13px}.login-card h1{font-size:26px}}
